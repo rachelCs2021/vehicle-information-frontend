@@ -1,6 +1,12 @@
 import i18n from "../plugins/i18n";
 
-export const blessByTime = () => {
+interface TableHeaders {
+  title: string;
+  key: string;
+  sortable?: boolean;
+}
+
+export const blessByTime = (): string => {
   let bless;
   const currentHour = new Date().getHours();
 
@@ -17,14 +23,13 @@ export const blessByTime = () => {
   return i18n.global.t(`bless.${bless}`);
 };
 
-export const tableHeaders = [
+export const tableHeaders: TableHeaders[] = [
   {
     title: "מספר רכב",
-    align: "start",
-    sortable: false,
     key: "carNumber",
   },
   { title: "יצרן", key: "manufacturer" },
   { title: "דגם", key: "model" },
   { title: "תאריך טסט", key: "testDate" },
+  { title: "עריכה / מחיקה", key: "actions", sortable: false },
 ];

@@ -1,6 +1,9 @@
 {
   "main": {
-    "title": "ניהול טסטים"
+    "title": "ניהול טסטים",
+    "cancel": "ביטול",
+    "confirm": "אישור",
+    "save": "שמירה"
   },
   "bless": {
     "goodMorning": "בוקר טוב",
@@ -11,5 +14,10 @@
   "navigation": {
     "homePage": "דף הבית",
     "newCar": "רכב חדש"
+  },
+  "table": {
+    "itemsPerPage": "שורות לעמוד",
+    "editCarTitle": "עריכת רכב",
+    "deletionConfirmation": "האם אתה בטוח שברצונך למחוק שורה זו?"
   }
 }
