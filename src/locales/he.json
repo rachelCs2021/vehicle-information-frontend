@@ -19,5 +19,12 @@
     "itemsPerPage": "שורות לעמוד",
     "editCarTitle": "עריכת רכב",
     "deletionConfirmation": "האם אתה בטוח שברצונך למחוק שורה זו?"
-  }
+  },
+  "AddNewCar": {
+    "title": "הוספת רכב חדש",
+    "carNum": "מספר רכב",
+    "manufacturer": "יצרן",
+    "model": "דגם",
+    "PassedTestOnDate": "עבר טסט בתאריך"
+} 
 }

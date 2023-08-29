@@ -5,11 +5,11 @@
  */
 
 // Styles
-import '@mdi/font/css/materialdesignicons.css'
-import 'vuetify/styles'
+import "@mdi/font/css/materialdesignicons.css";
+import "vuetify/styles";
 
 // Composables
-import { createVuetify } from 'vuetify'
+import { createVuetify } from "vuetify";
 import { he, en } from "vuetify/locale";
 import * as labs from "vuetify/labs/components";
 
@@ -34,4 +34,13 @@ export default createVuetify({
     fallback: "en",
     messages: { he, en },
   },
-})
+  defaults: {
+    VBtn: { class: "mr-4 mb-4", color: "red-darken-1" },
+    VTextField: {
+      variant: "solo-filled",
+      density: "comfortable",
+      riple: true,
+      style: "width: 250px",
+    },
+  },
+});
