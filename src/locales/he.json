@@ -1,0 +1,15 @@
+{
+  "main": {
+    "title": "ניהול טסטים"
+  },
+  "bless": {
+    "goodMorning": "בוקר טוב",
+    "goodEvning": "ערב טוב",
+    "goodNight": "לילה טוב",
+    "goodAfternoon": "צהריים טובים"
+  },
+  "navigation": {
+    "homePage": "דף הבית",
+    "newCar": "רכב חדש"
+  }
+}
