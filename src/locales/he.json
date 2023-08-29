@@ -11,5 +11,8 @@
   "navigation": {
     "homePage": "דף הבית",
     "newCar": "רכב חדש"
+  },
+  "AddNewCar": {
+    "title": "הוספת רכב חדש"
   }
 }

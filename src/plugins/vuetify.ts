@@ -5,11 +5,11 @@
  */
 
 // Styles
-import '@mdi/font/css/materialdesignicons.css'
-import 'vuetify/styles'
+import "@mdi/font/css/materialdesignicons.css";
+import "vuetify/styles";
 
 // Composables
-import { createVuetify } from 'vuetify'
+import { createVuetify } from "vuetify";
 import { he, en } from "vuetify/locale";
 
 // https://vuetifyjs.com/en/introduction/why-vuetify/#feature-guides
@@ -18,8 +18,8 @@ export default createVuetify({
     themes: {
       light: {
         colors: {
-          primary: '#1867C0',
-          secondary: '#5CBBF6',
+          primary: "#1867C0",
+          secondary: "#5CBBF6",
         },
       },
     },
@@ -29,4 +29,7 @@ export default createVuetify({
     fallback: "en",
     messages: { he, en },
   },
-})
+  defaults: {
+    VBtn: { color: "red-darken-1" },
+  },
+});

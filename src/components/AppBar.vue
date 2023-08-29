@@ -1,16 +1,15 @@
 <template>
   <v-app-bar color="#c9cbce" dark height="80">
-    
     <v-app-bar-title class="mr-3 text-black">{{
-      t("main.title")
+      $t("main.title")
     }}</v-app-bar-title>
-    
+
     <template #prepend>
       <v-img :src="logo" :width="80" />
     </template>
-    
+
     <v-spacer />
-    
+
     <span v-text="blessByTime()" class="mx-4 text-black font-weight-medium" />
 
     <template #extension>
@@ -20,10 +19,7 @@
 </template>
 
 <script lang="ts" setup>
-import { useI18n } from "vue-i18n";
 import { blessByTime } from "../utils";
-
-const { t } = useI18n();
 
 defineProps({
   logo: String,
