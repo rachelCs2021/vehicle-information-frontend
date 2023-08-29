@@ -30,6 +30,12 @@ export default createVuetify({
     messages: { he, en },
   },
   defaults: {
-    VBtn: { color: "red-darken-1" },
+    VBtn: { class: "mr-4 mb-4", color: "red-darken-1" },
+    VTextField: {
+      variant: "solo-filled",
+      density: "comfortable",
+      riple: true,
+      style: "width: 250px",
+    },
   },
 });

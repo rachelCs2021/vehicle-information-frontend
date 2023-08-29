@@ -13,6 +13,10 @@
     "newCar": "רכב חדש"
   },
   "AddNewCar": {
-    "title": "הוספת רכב חדש"
+    "title": "הוספת רכב חדש",
+    "carNum": "מספר רכב",
+    "manufacturer": "יצרן",
+    "model": "דגם",
+    "PassedTestOnDate": "עבר טסט בתאריך"
   }
 }
