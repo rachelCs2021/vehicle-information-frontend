@@ -22,9 +22,9 @@
   },
   "AddNewCar": {
     "title": "הוספת רכב חדש",
-    "carNum": "מספר רכב",
+    "carNumber": "מספר רכב",
     "manufacturer": "יצרן",
     "model": "דגם",
-    "PassedTestOnDate": "עבר טסט בתאריך"
-} 
+    "passedTestOnDate": "עבר טסט בתאריך"
+  }
 }

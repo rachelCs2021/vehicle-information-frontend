@@ -1,6 +1,5 @@
 <template>
-  <v-app-bar color="grey" dark height="80">
-    
+  <v-app-bar density="compact" color="grey" dark height="70">
     <v-app-bar-title class="mr-3 text-black">{{
       $t("main.title")
     }}</v-app-bar-title>
