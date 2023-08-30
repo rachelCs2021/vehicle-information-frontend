@@ -18,13 +18,15 @@
   "table": {
     "itemsPerPage": "שורות לעמוד",
     "editCarTitle": "עריכת רכב",
-    "deletionConfirmation": "האם אתה בטוח שברצונך למחוק שורה זו?"
+    "deletionConfirmation": "האם אתה בטוח שברצונך למחוק שורה זו?",
+    "updatedSuccessfully": "רכב מספר {carNumber} עודכן בהצלחה",
+    "deletedSuccessfully": "רכב מספר {carNumber} נמחק בהצלחה"
   },
   "AddNewCar": {
     "title": "הוספת רכב חדש",
     "carNum": "מספר רכב",
     "manufacturer": "יצרן",
     "model": "דגם",
-    "PassedTestOnDate": "עבר טסט בתאריך"
+    "PassedTestOnDate": "תאריך טסט"
 } 
 }

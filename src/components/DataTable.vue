@@ -27,12 +27,12 @@
         size="small"
         class="me-2"
         icon="mdi-pencil"
-        @click="$emit('on-edit-car', item.raw)"
+        @click="$emit('on-car-editing', item.raw)"
       />
       <v-icon
         size="small"
         icon="mdi-delete"
-        @click="$emit('on-car-delete', item.raw)"
+        @click="$emit('on-car-deletion', item.raw)"
       />
     </template>
   </v-data-table>

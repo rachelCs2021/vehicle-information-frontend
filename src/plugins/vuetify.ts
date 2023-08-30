@@ -39,8 +39,8 @@ export default createVuetify({
     VTextField: {
       variant: "solo-filled",
       density: "comfortable",
-      riple: true,
       style: "width: 250px",
+      clearable: true
     },
   },
 });

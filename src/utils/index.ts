@@ -30,6 +30,6 @@ export const tableHeaders: TableHeaders[] = [
   },
   { title: "יצרן", key: "manufacturer" },
   { title: "דגם", key: "model" },
-  { title: "תאריך טסט", key: "testDate" },
+  { title: "תאריך טסט", key: "passedTestOnDate" },
   { title: "עריכה / מחיקה", key: "actions", sortable: false },
 ];
