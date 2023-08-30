@@ -38,8 +38,8 @@ export default createVuetify({
     VTextField: {
       variant: "solo-inverted",
       density: "comfortable",
-      riple: true,
       style: "max-width: 75%",
+      clearable: true,
     },
   },
 });

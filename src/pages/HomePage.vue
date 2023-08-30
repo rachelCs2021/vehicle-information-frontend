@@ -4,68 +4,132 @@
       :items="carArray"
       :page="state.page"
       :headers="tableHeaders"
-      class="overflow-y-auto elevation-10"
       :itemsPerPage="state.itemsPerPage"
       :itemsPerPageText="itemsPerPageText"
       :pageLength="Math.ceil(state.totalItems / state.itemsPerPage)"
+      class="overflow-y-auto elevation-15"
       @on-change-page="onPage($event)"
       @on-select-item="onSelectItem($event)"
-      @on-edit-car="editCarDetails"
-      @on-car-delete="deleteCar"
+      @on-car-editing="editCarDetails"
+      @on-car-deletion="carDeletion"
     />
 
-    <v-dialog v-model="state.editDialog" max-width="500px">
+    <v-dialog
+      persistent
+      v-model="state.editDialog"
+      max-width="600px"
+      class="pa-5"
+    >
       <v-card>
-        <v-card-title class="text-h5">{{
+        <v-card-title class="text-h5 mt-3 mr-6">{{
           $t("table.editCarTitle")
         }}</v-card-title>
 
-        <!-- <v-card-text>
-          <v-container> 
-
+        <v-card-text>
+          <v-container class="px-0">
+            <v-row>
+              <v-col cols="6">
+                <v-text-field
+                  :label="$t('AddNewCar.carNum')"
+                  v-model="state.carModel.carNumber"
+                />
+              </v-col>
+              <v-col cols="6">
+                <v-text-field
+                  :label="$t('AddNewCar.manufacturer')"
+                  v-model="state.carModel.manufacturer"
+                />
+              </v-col>
+            </v-row>
+            <v-row>
+              <v-col cols="6">
+                <v-text-field
+                  :label="$t('AddNewCar.model')"
+                  v-model="state.carModel.model"
+                />
+              </v-col>
+              <v-col cols="6">
+                <v-text-field
+                  :label="$t('AddNewCar.PassedTestOnDate')"
+                  v-model="state.carModel.passedTestOnDate"
+                />
+              </v-col>
+            </v-row>
           </v-container>
-        </v-card-text> -->
+        </v-card-text>
 
-        <v-card-actions>
-          <v-spacer />
+        <v-card-actions class="px-3">
           <v-btn
-            color="blue-darken-1"
-            variant="text"
+            variant="outlined"
+            color="red-lighten-1"
             @click="closeEditDialog"
             >{{ $t("main.cancel") }}</v-btn
           >
-          <v-btn color="blue-darken-1" variant="text" @click="saveChanges">{{
-            $t("main.save")
-          }}</v-btn>
           <v-spacer />
+
+          <v-btn
+            color="white"
+            class="bg-red-lighten-1 ml-5"
+            variant="text"
+            @click="saveChanges"
+            >{{ $t("main.save") }}</v-btn
+          >
         </v-card-actions>
       </v-card>
     </v-dialog>
 
-    <v-dialog v-model="state.deleteDialog" max-width="500px">
+    <v-dialog persistent v-model="state.deleteDialog" max-width="500px">
       <v-card>
-        <v-card-title class="text-h5">{{
+        <v-card-title class="text-h5 text-center my-6">{{
           $t("table.deletionConfirmation")
         }}</v-card-title>
-        <v-card-actions>
-          <v-spacer />
+
+        <div class="d-flex justify-center">
           <v-btn
-            color="blue-darken-1"
-            variant="text"
+            variant="outlined"
+            color="red-lighten-1"
             @click="closeDeleteDialog"
             >{{ $t("main.cancel") }}</v-btn
           >
           <v-btn
-            color="blue-darken-1"
+            color="white"
             variant="text"
+            class="bg-red-lighten-1 ml-5"
             @click="deleteItemConfirm"
             >{{ $t("main.confirm") }}</v-btn
           >
-          <v-spacer />
-        </v-card-actions>
+        </div>
       </v-card>
     </v-dialog>
   </v-container>
+
+  <v-snackbar
+    v-model="state.snackbar"
+    :timeout="state.timeout"
+    :color="state.isEditCar ? 'white' : ''"
+  >
+    {{
+      $t(
+        state.isEditCar
+          ? "table.updatedSuccessfully"
+          : "table.deletedSuccessfully",
+        {
+          carNumber: state.carModel.carNumber,
+        }
+      )
+    }}
+
+    <template v-slot:actions>
+      <v-btn
+        color="red"
+        variant="text"
+        class="mr-0 mb-0 mt-3"
+        @click="state.snackbar = false"
+      >
+        Close
+      </v-btn>
+    </template>
+  </v-snackbar>
 </template>
 
 <script lang="ts">
@@ -76,14 +140,17 @@ interface State {
   itemsPerPage: number;
   deleteDialog: boolean;
   editDialog: boolean;
-  selectedCar: any;
+  isEditCar: boolean;
+  carModel: CarModel;
+  snackbar: boolean;
+  timeout: number;
 }
 
-interface CarArray {
-  carNumber: number;
+interface CarModel {
+  carNumber: string;
   manufacturer: string;
   model: string;
-  testDate: string;
+  passedTestOnDate: string;
 }
 </script>
 
@@ -99,70 +166,78 @@ const state: State = reactive({
   itemsPerPage: 10,
   deleteDialog: false,
   editDialog: false,
-  selectedCar: "",
+  isEditCar: false,
+  carModel: {
+    carNumber: "",
+    manufacturer: "",
+    model: "",
+    passedTestOnDate: "",
+  },
+  snackbar: false,
+  timeout: 2000,
 });
 
-const carArray: CarArray[] = [
+const carArray: CarModel[] = [
   {
-    carNumber: 1234567,
-    manufacturer: 'טויוטה',
-    model: 'קאמרי',
-    testDate: '2023-08-29'
+    carNumber: "1234567",
+    manufacturer: "טויוטה",
+    model: "קאמרי",
+    passedTestOnDate: "2023-08-29",
   },
   {
-    carNumber: 1478523,
-    manufacturer: 'פורד',
-    model: 'מוסטנג',
-    testDate: '2023-08-30'
+    carNumber: "1478523",
+    manufacturer: "פורד",
+    model: "מוסטנג",
+    passedTestOnDate: "2023-08-30",
   },
   {
-    carNumber: 7896541,
-    manufacturer: 'הונדה',
-    model: 'סיביק',
-    testDate: '2023-08-31'
+    carNumber: "7896541",
+    manufacturer: "הונדה",
+    model: "סיביק",
+    passedTestOnDate: "2023-08-31",
   },
   {
-    carNumber: 3214569,
-    manufacturer: 'מרצדס',
-    model: 'C-Class',
-    testDate: '2023-09-01'
+    carNumber: "3214569",
+    manufacturer: "מרצדס",
+    model: "C-Class",
+    passedTestOnDate: "2023-09-01",
   },
   {
-    carNumber: 9632587,
-    manufacturer: 'ב.מ.וו',
-    model: 'X5',
-    testDate: '2023-09-02'
+    carNumber: "9632587",
+    manufacturer: "ב.מ.וו",
+    model: "X5",
+    passedTestOnDate: "2023-09-02",
   },
   {
-    carNumber: 5647852,
-    manufacturer: 'אאודי',
-    model: 'A4',
-    testDate: '2023-09-03'
+    carNumber: "5647852",
+    manufacturer: "אאודי",
+    model: "A4",
+    passedTestOnDate: "2023-09-03",
   },
   {
-    carNumber: 125488,
-    manufacturer: 'פיאט',
-    model: '500',
-    testDate: '2023-09-04'
+    carNumber: "125488",
+    manufacturer: "פיאט",
+    model: "500",
+    passedTestOnDate: "2023-09-04",
   },
   {
-    carNumber: 88888888,
-    manufacturer: 'ניסאן',
-    model: 'קשקאי',
-    testDate: '2023-09-05'
+    carNumber: "88888888",
+    manufacturer: "ניסאן",
+    model: "קשקאי",
+    passedTestOnDate: "2023-09-05",
   },
   {
-    carNumber: 5555555,
-    manufacturer: 'סובארו',
-    model: 'אימפרזה',
-    testDate: '2023-09-06'
+    carNumber: "5555555",
+    manufacturer: "סובארו",
+    model: "אימפרזה",
+    passedTestOnDate: "2023-09-06",
   },
   {
-    carNumber: 562333333,
-    manufacturer: 'מיצובישי',
-    model: 'Outlander',
-    testDate: '2023-09-07'
-  }
+    carNumber: "562333333",
+    manufacturer: "מיצובישי",
+    model: "Outlander",
+    passedTestOnDate: "2023-09-07",
+  },
 ];
 
 onBeforeMount(() => {
@@ -179,14 +254,16 @@ const itemsPerPageText = computed<string>(() => {
   ).toLocaleString()} מתוך ${state.totalItems.toLocaleString()}`;
 });
 
-const editCarDetails = (item: object) => {
-  console.log("edit", item);
-  state.selectedCar = item;
+const editCarDetails = (item: CarModel) => {
+  state.isEditCar = true;
+  state.carModel = item;
   state.editDialog = true;
 };
 
 const saveChanges = () => {
   console.log("save");
+  // update the carModel object
+  state.snackbar = true;
   state.editDialog = false;
 };
 
@@ -195,9 +272,10 @@ const closeEditDialog = () => {
   state.editDialog = false;
 };
 
-const deleteCar = (item: object) => {
+const carDeletion = (item: CarModel) => {
   console.log("delete", item);
-  state.selectedCar = item;
+  state.isEditCar = false;
+  state.carModel = item;
   state.deleteDialog = true;
 };
 
@@ -208,8 +286,10 @@ const closeDeleteDialog = () => {
 };
 
 const deleteItemConfirm = () => {
-  console.log("delet car", state.selectedCar);
+  console.log("delet car number:", state.carModel.carNumber);
+  // remove the car object
   state.deleteDialog = false;
+  state.snackbar = true;
 };
 
 function onSelectItem(numItems: number) {
