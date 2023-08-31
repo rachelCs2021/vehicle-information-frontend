@@ -22,11 +22,19 @@
     "updatedSuccessfully": "רכב מספר {carNumber} עודכן בהצלחה",
     "deletedSuccessfully": "רכב מספר {carNumber} נמחק בהצלחה"
   },
-  "AddNewCar": {
+  "NewCarForm": {
     "title": "הוספת רכב חדש",
     "carNumber": "מספר רכב",
     "manufacturer": "יצרן",
     "model": "דגם",
-    "passedTestOnDate": "עבר טסט בתאריך"
+    "passedTestOnDate": "עבר טסט בתאריך",
+    "sendForm": "שלח טופס"
+  },
+  "tableHeaders": {
+    "carNumber": "מספר רכב",
+    "manufacturer": "יצרן",
+    "model": "דגם",
+    "passedTestOnDate": "עבר טסט בתאריך",
+    "actions": "עריכה/מחיקה"
   }
 }

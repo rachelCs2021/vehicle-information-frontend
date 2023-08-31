@@ -30,13 +30,13 @@
             <v-row>
               <v-col cols="6">
                 <v-text-field
-                  :label="$t('AddNewCar.carNum')"
+                  :label="$t('NewCarForm.carNum')"
                   v-model="state.carModel.carNumber"
                 />
               </v-col>
               <v-col cols="6">
                 <v-text-field
-                  :label="$t('AddNewCar.manufacturer')"
+                  :label="$t('NewCarForm.manufacturer')"
                   v-model="state.carModel.manufacturer"
                 />
               </v-col>
@@ -44,13 +44,13 @@
             <v-row>
               <v-col cols="6">
                 <v-text-field
-                  :label="$t('AddNewCar.model')"
+                  :label="$t('NewCarForm.model')"
                   v-model="state.carModel.model"
                 />
               </v-col>
               <v-col cols="6">
                 <v-text-field
-                  :label="$t('AddNewCar.PassedTestOnDate')"
+                  :label="$t('NewCarForm.PassedTestOnDate')"
                   v-model="state.carModel.passedTestOnDate"
                 />
               </v-col>
@@ -261,32 +261,26 @@ const editCarDetails = (item: CarModel) => {
 };
 
 const saveChanges = () => {
-  console.log("save");
   // update the carModel object
   state.snackbar = true;
   state.editDialog = false;
 };
 
 const closeEditDialog = () => {
-  console.log("close edit dialog");
   state.editDialog = false;
 };
 
 const carDeletion = (item: CarModel) => {
-  console.log("delete", item);
   state.isEditCar = false;
   state.carModel = item;
   state.deleteDialog = true;
 };
 
 const closeDeleteDialog = () => {
-  console.log("close delete dialog");
-
   state.deleteDialog = false;
 };
 
 const deleteItemConfirm = () => {
-  console.log("delet car number:", state.carModel.carNumber);
   // remove the car object
   state.deleteDialog = false;
   state.snackbar = true;

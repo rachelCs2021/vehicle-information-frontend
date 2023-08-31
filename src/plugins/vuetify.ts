@@ -39,6 +39,7 @@ export default createVuetify({
       variant: "solo-inverted",
       density: "comfortable",
       style: "max-width: 75%",
+      class: "mr-4",
       clearable: true,
     },
   },

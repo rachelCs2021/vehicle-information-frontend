@@ -25,11 +25,27 @@ export const blessByTime = (): string => {
 
 export const tableHeaders: TableHeaders[] = [
   {
-    title: "מספר רכב",
+    title: i18n.global.t(`tableHeaders.carNumber`),
     key: "carNumber",
   },
-  { title: "יצרן", key: "manufacturer" },
-  { title: "דגם", key: "model" },
-  { title: "תאריך טסט", key: "passedTestOnDate" },
-  { title: "עריכה / מחיקה", key: "actions", sortable: false },
+  { title: i18n.global.t(`tableHeaders.manufacturer`), key: "manufacturer" },
+  { title: i18n.global.t(`tableHeaders.model`), key: "model" },
+  {
+    title: i18n.global.t(`tableHeaders.passedTestOnDate`),
+    key: "passedTestOnDate",
+  },
+  {
+    title: i18n.global.t(`tableHeaders.actions`),
+    key: "actions",
+    sortable: false,
+  },
 ];
+export const oneYearAhead = (date: Date): Date => {
+  const oneYearFromNow = date;
+  oneYearFromNow.setFullYear(oneYearFromNow.getFullYear() + 1);
+  return oneYearFromNow;
+};
+export const formatDate = (date: Date): string => {
+  const formatedDate = date.toISOString().split("T")[0];
+  return formatedDate;
+};
