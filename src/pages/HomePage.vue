@@ -30,13 +30,13 @@
             <v-row>
               <v-col cols="6">
                 <v-text-field
-                  :label="$t('NewCarForm.carNum')"
+                  :label="$t('newCarForm.carNumber')"
                   v-model="state.carModel.carNumber"
                 />
               </v-col>
               <v-col cols="6">
                 <v-text-field
-                  :label="$t('NewCarForm.manufacturer')"
+                  :label="$t('newCarForm.manufacturer')"
                   v-model="state.carModel.manufacturer"
                 />
               </v-col>
@@ -44,14 +44,18 @@
             <v-row>
               <v-col cols="6">
                 <v-text-field
-                  :label="$t('NewCarForm.model')"
+                  :label="$t('newCarForm.model')"
                   v-model="state.carModel.model"
                 />
               </v-col>
               <v-col cols="6">
                 <v-text-field
-                  :label="$t('NewCarForm.PassedTestOnDate')"
+                  type="date"
+                  :label="$t('newCarForm.passedTestOnDate')"
+                  min="2020-01-31"
+                  :max="formatDate(oneYearAhead(new Date()))"
                   v-model="state.carModel.passedTestOnDate"
+                  required
                 />
               </v-col>
             </v-row>
@@ -59,21 +63,12 @@
         </v-card-text>
 
         <v-card-actions class="px-3">
-          <v-btn
-            variant="outlined"
-            color="red-lighten-1"
-            @click="closeEditDialog"
-            >{{ $t("main.cancel") }}</v-btn
-          >
+          <second-button @click="closeEditDialog">{{
+            $t("main.cancel")
+          }}</second-button>
           <v-spacer />
 
-          <v-btn
-            color="white"
-            class="bg-red-lighten-1 ml-5"
-            variant="text"
-            @click="saveChanges"
-            >{{ $t("main.save") }}</v-btn
-          >
+          <v-btn class="ml-5" @click="saveChanges">{{ $t("main.save") }}</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -85,19 +80,12 @@
         }}</v-card-title>
 
         <div class="d-flex justify-center">
-          <v-btn
-            variant="outlined"
-            color="red-lighten-1"
-            @click="closeDeleteDialog"
-            >{{ $t("main.cancel") }}</v-btn
-          >
-          <v-btn
-            color="white"
-            variant="text"
-            class="bg-red-lighten-1 ml-5"
-            @click="deleteItemConfirm"
-            >{{ $t("main.confirm") }}</v-btn
-          >
+          <second-button @click="closeDeleteDialog">{{
+            $t("main.cancel")
+          }}</second-button>
+          <v-btn class="ml-5" @click="deleteItemConfirm">{{
+            $t("main.confirm")
+          }}</v-btn>
         </div>
       </v-card>
     </v-dialog>
@@ -158,6 +146,7 @@ interface CarModel {
 import { reactive, computed, onBeforeMount } from "vue";
 import { DataTable } from "../components";
 import { tableHeaders } from "../utils";
+import { formatDate, oneYearAhead } from "../utils";
 
 const state: State = reactive({
   page: 1,

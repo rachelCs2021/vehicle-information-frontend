@@ -17,12 +17,12 @@
   },
   "table": {
     "itemsPerPage": "שורות לעמוד",
-    "editCarTitle": "עריכת רכב",
+    "editCarTitle": "עריכת פרטי רכב",
     "deletionConfirmation": "האם אתה בטוח שברצונך למחוק שורה זו?",
     "updatedSuccessfully": "רכב מספר {carNumber} עודכן בהצלחה",
     "deletedSuccessfully": "רכב מספר {carNumber} נמחק בהצלחה"
   },
-  "NewCarForm": {
+  "newCarForm": {
     "title": "הוספת רכב חדש",
     "carNumber": "מספר רכב",
     "manufacturer": "יצרן",

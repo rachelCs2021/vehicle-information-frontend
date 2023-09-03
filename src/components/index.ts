@@ -1,4 +1,4 @@
-import AppBar from "./AppBar.vue";
+import AppBar from "../layouts/AppBar.vue";
 import DataTable from "./DataTable.vue";
 import Select from "./Select.vue";
 import Pagination from "./Pagination.vue";
