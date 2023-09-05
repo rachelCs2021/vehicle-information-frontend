@@ -133,13 +133,6 @@ interface State {
   snackbar: boolean;
   timeout: number;
 }
-
-interface CarModel {
-  carNumber: string;
-  manufacturer: string;
-  model: string;
-  passedTestOnDate: string;
-}
 </script>
 
 <script setup lang="ts">
@@ -147,7 +140,7 @@ import { reactive, computed, onBeforeMount } from "vue";
 import { DataTable } from "../components";
 import { tableHeaders } from "../utils";
 import { formatDate, oneYearAhead } from "../utils";
-
+import CarModel from "../types/CarModel";
 const state: State = reactive({
   page: 1,
   skip: 0,

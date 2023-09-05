@@ -28,7 +28,7 @@
     </v-card>
   </v-container>
 </template>
-
+<script></script>
 <script setup lang="ts">
 import { formatDate, oneYearAhead } from "../utils";
 </script>

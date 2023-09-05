@@ -14,7 +14,7 @@
       </v-tabs>
     </template>
   </AppBar>
-  <default-view />
+  <RouterView />
 </template>
 
 <script lang="ts">
@@ -32,7 +32,6 @@ import { useI18n } from "vue-i18n";
 import { reactive } from "vue";
 import { AppBar } from ".";
 import { logo } from "../assets";
-import DefaultView from "./DefaultView";
 const { t } = useI18n();
 const state: State = reactive({
   tabsItems: [
