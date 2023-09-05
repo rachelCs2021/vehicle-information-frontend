@@ -28,7 +28,7 @@
     "manufacturer": "יצרן",
     "model": "דגם",
     "passedTestOnDate": "עבר טסט בתאריך",
-    "sendForm": "שלח טופס"
+    "addCar": "הוספה"
   },
   "tableHeaders": {
     "carNumber": "מספר רכב",

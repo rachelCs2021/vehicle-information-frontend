@@ -1,9 +1,3 @@
-/**
- * plugins/vuetify.ts
- *
- * Framework documentation: https://vuetifyjs.com`
- */
-
 // Styles
 import "@mdi/font/css/materialdesignicons.css";
 import "vuetify/styles";
@@ -13,7 +7,7 @@ import { createVuetify } from "vuetify";
 import { he, en } from "vuetify/locale";
 import * as labs from "vuetify/labs/components";
 import { VBtn } from "vuetify/components/VBtn";
-// https://vuetifyjs.com/en/introduction/why-vuetify/#feature-guides
+
 export default createVuetify({
   components: {
     ...labs,
@@ -37,6 +31,7 @@ export default createVuetify({
     secondButton: VBtn,
   },
   defaults: {
+    VSelect: { variant: "outlined", density: "comfortable"},
     VBtn: { class: "mr-4 mb-4", color: "red-lighten-1" },
     secondButton: {
       class: "mr-4 mb-4",
@@ -46,8 +41,8 @@ export default createVuetify({
     VTextField: {
       variant: "solo-inverted",
       density: "comfortable",
-      style: "max-width: 75%",
-      class: "mr-4",
+      // style: "max-width: 85%",
+      class: "mx-5 my-2",
       clearable: true,
     },
     VCard: {

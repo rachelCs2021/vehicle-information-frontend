@@ -278,5 +278,3 @@ function onPage(page: number) {
   loadCarsData();
 }
 </script>
-
-<style scoped></style>

@@ -21,18 +21,22 @@
 interface State {
   tabsItems: Tab[];
 }
+
 interface Tab {
   title: string;
   to: string;
   icon: string;
 }
 </script>
+
 <script lang="ts" setup>
 import { useI18n } from "vue-i18n";
 import { reactive } from "vue";
 import { AppBar } from ".";
 import { logo } from "../assets";
+
 const { t } = useI18n();
+
 const state: State = reactive({
   tabsItems: [
     {

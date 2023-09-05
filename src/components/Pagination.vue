@@ -2,7 +2,7 @@
   <div class="d-flex justify-space-between align-center" style="gap: 10px">
     <div class="d-flex mt-6" style="gap: 5px">
       <p class="mt-2" v-text="$t('table.itemsPerPage')" />
-      <Select
+      <v-select
         :items="items"
         :value="itemsPerPage"
         class="selectWidth"
@@ -23,7 +23,6 @@
 
 <script lang="ts" setup>
   import { reactive } from "vue";
-  import { Select } from "../components";
 
   defineProps({
     page: Number,

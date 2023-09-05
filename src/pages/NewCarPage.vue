@@ -1,36 +1,31 @@
 <template>
-  <div class="py-10" />
-  <v-container class="d-flex justify-center">
-    <v-card class="w-75">
-      <v-card-title>{{ $t("newCarForm.title") }}</v-card-title>
+  <v-container class="d-flex mt-10 justify-center">
+    <v-card class="w-75 py-5 px-8">
+      <v-card-title class="mb-3 font-weight-bold">{{ $t("newCarForm.title") }}</v-card-title>
       <v-row no-gutters>
-        <v-col cols="4">
+        <v-col style="max-width: 45%">
           <v-text-field :label="$t('newCarForm.carNumber')" />
-        </v-col>
-        <v-col cols="4">
           <v-text-field :label="$t('newCarForm.manufacturer')" />
-        </v-col>
-        <v-col cols="4">
           <v-text-field :label="$t('newCarForm.model')" />
-        </v-col>
-        <v-col cols="4">
           <v-text-field
-            type="date"
-            :label="$t('newCarForm.passedTestOnDate')"
-            min="2020-01-31"
-            :max="formatDate(oneYearAhead(new Date()))"
             required
+            type="date"
+            min="2020-01-31"
+            :label="$t('newCarForm.passedTestOnDate')"
+            :max="formatDate(oneYearAhead(new Date()))"
           />
           <!--min is arbitrary-->
         </v-col>
+        <v-col>
+          <v-img :src="carPhoto" :max-width="500" class="mx-auto" />
+        </v-col>
       </v-row>
-      <v-btn :text="$t('newCarForm.sendForm')" />
+      <v-btn :text="$t('newCarForm.addCar')" prepend-icon="mdi-plus" />
     </v-card>
   </v-container>
 </template>
-<script></script>
+
 <script setup lang="ts">
 import { formatDate, oneYearAhead } from "../utils";
+import { carPhoto } from "../assets";
 </script>
-
-<style scoped></style>

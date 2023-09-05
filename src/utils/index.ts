@@ -40,11 +40,13 @@ export const tableHeaders: TableHeaders[] = [
     sortable: false,
   },
 ];
+
 export const oneYearAhead = (date: Date): Date => {
   const oneYearFromNow = date;
   oneYearFromNow.setFullYear(oneYearFromNow.getFullYear() + 1);
   return oneYearFromNow;
 };
+
 export const formatDate = (date: Date): string => {
   const formatedDate = date.toISOString().split("T")[0];
   return formatedDate;
