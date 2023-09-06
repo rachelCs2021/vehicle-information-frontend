@@ -2,11 +2,11 @@
   <v-data-table
     fixed-header
     :items="items"
-    :headers="headers"
+    class="mx-auto"
     v-bind="$attrs"
+    :headers="headers"
     style="width: 95%"
     :items-per-page="-1"
-    class="elevation-1 mx-auto mt-6 mb-5"
   >
     <template #bottom>
       <div class="d-flex justify-end">

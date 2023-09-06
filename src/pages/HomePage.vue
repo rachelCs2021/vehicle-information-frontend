@@ -1,5 +1,21 @@
 <template>
   <v-container>
+    <div class="d-flex mt-3">
+      <searchInput
+        style="max-width: 15%"
+        v-model="state.searchInput"
+        :label="$t('main.searchBy')"
+        @keyup.enter="searchVehicleByNumber"
+      />
+      <v-btn
+        height="43"
+        color="grey-lighten-1"
+        class="mr-3 py-3"
+        :text="$t('main.search')"
+        prepend-icon="mdi-magnify"
+        @click="searchVehicleByNumber"
+      />
+    </div>
     <DataTable
       :items="carArray"
       :page="state.page"
@@ -7,7 +23,7 @@
       :itemsPerPage="state.itemsPerPage"
       :itemsPerPageText="itemsPerPageText"
       :pageLength="Math.ceil(state.totalItems / state.itemsPerPage)"
-      class="overflow-y-auto elevation-15"
+      class="overflow-y-auto elevation-15 mt-2 mb-5"
       @on-change-page="onPage($event)"
       @on-select-item="onSelectItem($event)"
       @on-car-editing="editCarDetails"
@@ -126,6 +142,7 @@ interface State {
   skip: number;
   totalItems: number;
   itemsPerPage: number;
+  searchInput: string;
   deleteDialog: boolean;
   editDialog: boolean;
   isEditCar: boolean;
@@ -146,6 +163,7 @@ const state: State = reactive({
   skip: 0,
   totalItems: 0,
   itemsPerPage: 10,
+  searchInput: "",
   deleteDialog: false,
   editDialog: false,
   isEditCar: false,
@@ -235,6 +253,12 @@ const itemsPerPageText = computed<string>(() => {
     carArray.length + state.skip
   ).toLocaleString()} מתוך ${state.totalItems.toLocaleString()}`;
 });
+
+const searchVehicleByNumber = () => {
+  console.log("search car number", state.searchInput);
+
+  // getVehicle(/:vehicleNumber)
+};
 
 const editCarDetails = (item: CarModel) => {
   state.isEditCar = true;

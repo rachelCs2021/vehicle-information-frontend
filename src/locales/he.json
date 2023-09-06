@@ -3,7 +3,9 @@
     "title": "ניהול טסטים",
     "cancel": "ביטול",
     "confirm": "אישור",
-    "save": "שמירה"
+    "save": "שמירה",
+    "search": "חיפוש",
+    "searchBy": "חיפוש לפי מספר רכב"
   },
   "bless": {
     "goodMorning": "בוקר טוב",
