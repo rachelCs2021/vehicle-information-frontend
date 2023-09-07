@@ -7,6 +7,7 @@ import { createVuetify } from "vuetify";
 import { he, en } from "vuetify/locale";
 import * as labs from "vuetify/labs/components";
 import { VBtn } from "vuetify/components/VBtn";
+import { VTextField } from "vuetify/lib/components/index.mjs";
 
 export default createVuetify({
   components: {
@@ -29,6 +30,7 @@ export default createVuetify({
   },
   aliases: {
     secondButton: VBtn,
+    searchInput: VTextField
   },
   defaults: {
     VSelect: { variant: "outlined", density: "comfortable"},
@@ -41,9 +43,12 @@ export default createVuetify({
     VTextField: {
       variant: "solo-inverted",
       density: "comfortable",
-      // style: "max-width: 85%",
       class: "mx-5 my-2",
       clearable: true,
+    },
+    searchInput: {
+     variant: "outlined",
+     density: "compact"
     },
     VCard: {
       elevation: "4",
