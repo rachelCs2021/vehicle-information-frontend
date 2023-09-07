@@ -2,8 +2,9 @@
   <v-container>
     <div class="d-flex mt-3">
       <searchInput
-        style="max-width: 15%"
+        style="max-width: 20%"
         v-model="state.searchInput"
+        prepend-inner-icon="mdi-magnify"
         :label="$t('main.searchBy')"
         @keyup.enter="searchVehicleByNumber"
       />
@@ -12,12 +13,11 @@
         color="grey-lighten-1"
         class="mr-3 py-3"
         :text="$t('main.search')"
-        prepend-icon="mdi-magnify"
         @click="searchVehicleByNumber"
       />
     </div>
     <DataTable
-      :items="carArray"
+      :items="state.carArray"
       :page="state.page"
       :headers="tableHeaders"
       :itemsPerPage="state.itemsPerPage"
@@ -138,6 +138,7 @@
 
 <script lang="ts">
 interface State {
+  carArray: CarModel[];
   page: number;
   skip: number;
   totalItems: number;
@@ -154,11 +155,14 @@ interface State {
 
 <script setup lang="ts">
 import { reactive, computed, onBeforeMount } from "vue";
+import { formatDate, oneYearAhead } from "../utils";
 import { DataTable } from "../components";
 import { tableHeaders } from "../utils";
-import { formatDate, oneYearAhead } from "../utils";
+import { getAllVehicles, getAllVehiclesCount } from "../api/core";
+import axios from "axios";
 import CarModel from "../types/CarModel";
 const state: State = reactive({
+  carArray: [],
   page: 1,
   skip: 0,
   totalItems: 0,
@@ -177,82 +181,28 @@ const state: State = reactive({
   timeout: 2000,
 });
 
-const carArray: CarModel[] = [
-  {
-    carNumber: "1234567",
-    manufacturer: "טויוטה",
-    model: "קאמרי",
-    passedTestOnDate: "2023-08-29",
-  },
-  {
-    carNumber: "1478523",
-    manufacturer: "פורד",
-    model: "מוסטנג",
-    passedTestOnDate: "2023-08-30",
-  },
-  {
-    carNumber: "7896541",
-    manufacturer: "הונדה",
-    model: "סיביק",
-    passedTestOnDate: "2023-08-31",
-  },
-  {
-    carNumber: "3214569",
-    manufacturer: "מרצדס",
-    model: "C-Class",
-    passedTestOnDate: "2023-09-01",
-  },
-  {
-    carNumber: "9632587",
-    manufacturer: "ב.מ.וו",
-    model: "X5",
-    passedTestOnDate: "2023-09-02",
-  },
-  {
-    carNumber: "5647852",
-    manufacturer: "אאודי",
-    model: "A4",
-    passedTestOnDate: "2023-09-03",
-  },
-  {
-    carNumber: "125488",
-    manufacturer: "פיאט",
-    model: "500",
-    passedTestOnDate: "2023-09-04",
-  },
-  {
-    carNumber: "88888888",
-    manufacturer: "ניסאן",
-    model: "קשקאי",
-    passedTestOnDate: "2023-09-05",
-  },
-  {
-    carNumber: "5555555",
-    manufacturer: "סובארו",
-    model: "אימפרזה",
-    passedTestOnDate: "2023-09-06",
-  },
-  {
-    carNumber: "562333333",
-    manufacturer: "מיצובישי",
-    model: "Outlander",
-    passedTestOnDate: "2023-09-07",
-  },
-];
-
 onBeforeMount(() => {
-  loadCarsData();
+  loadVehiclesData();
 });
-
-const loadCarsData = () => {
-  state.totalItems = carArray.length;
-};
 
 const itemsPerPageText = computed<string>(() => {
   return `${(state.skip + 1).toLocaleString()}-${(
-    carArray.length + state.skip
+    state.carArray.length + state.skip
   ).toLocaleString()} מתוך ${state.totalItems.toLocaleString()}`;
 });
+
+const loadVehiclesData = async () => {
+  try {
+    state.skip = (state.page - 1) * state.itemsPerPage;
+    state.carArray = await getAllVehicles(state.itemsPerPage, state.skip);
+    console.log('car', state.carArray.length);
+    
+    const getVehiclesCount = await getAllVehiclesCount()
+    state.totalItems = getVehiclesCount;
+  } catch (err) {
+    throw err;
+  }
+};
 
 const searchVehicleByNumber = () => {
   console.log("search car number", state.searchInput);
@@ -294,11 +244,11 @@ const deleteItemConfirm = () => {
 
 function onSelectItem(numItems: number) {
   state.itemsPerPage = numItems;
-  loadCarsData();
+  loadVehiclesData();
 }
 
 function onPage(page: number) {
   state.page = page;
-  loadCarsData();
+  loadVehiclesData();
 }
 </script>
