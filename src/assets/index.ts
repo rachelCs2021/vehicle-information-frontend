@@ -1,4 +1,5 @@
 import logo from "./GoodDriveLogo.png";
-import carPhoto from "./car-photo.svg"
+import carImage from "./car-photo.svg"
+import noDataImage from "./noData.svg"
 
-export { logo, carPhoto };
+export { logo, carImage, noDataImage };

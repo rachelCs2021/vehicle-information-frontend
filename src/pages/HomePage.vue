@@ -6,17 +6,15 @@
         v-model="state.searchInput"
         prepend-inner-icon="mdi-magnify"
         :label="$t('main.searchBy')"
-        @keyup.enter="searchVehicleByNumber"
-      />
-      <v-btn
-        height="43"
-        color="grey-lighten-1"
-        class="mr-3 py-3"
-        :text="$t('main.search')"
-        @click="searchVehicleByNumber"
+        v-debounce:800ms="getVehiclesBySearch"
       />
     </div>
+    <div v-if="state.loadingData" class="d-flex justify-center">
+      <v-progress-circular :size="50" indeterminate />
+    </div>
+
     <DataTable
+      v-else-if="state.carArray?.length > 0 && !state.loadingData"
       :items="state.carArray"
       :page="state.page"
       :headers="tableHeaders"
@@ -29,6 +27,11 @@
       @on-car-editing="editCarDetails"
       @on-car-deletion="carDeletion"
     />
+
+    <div v-else>
+      <v-img width="40vh" class="mx-auto" :src="noDataImage" />
+      <h3 class="text-center pt-6">{{ $t("main.noSearchResults")}}</h3>
+    </div>
 
     <v-dialog
       persistent
@@ -139,6 +142,8 @@
 <script lang="ts">
 interface State {
   carArray: CarModel[];
+  getCarData: CarDataResults;
+  loadingData: boolean;
   page: number;
   skip: number;
   totalItems: number;
@@ -154,15 +159,18 @@ interface State {
 </script>
 
 <script setup lang="ts">
-import { reactive, computed, onBeforeMount } from "vue";
-import { formatDate, oneYearAhead } from "../utils";
-import { DataTable } from "../components";
-import { tableHeaders } from "../utils";
-import { getAllVehicles, getAllVehiclesCount } from "../api/core";
 import axios from "axios";
-import CarModel from "../types/CarModel";
+import { noDataImage } from "../assets";
+import { DataTable } from "../components";
+import { reactive, computed, onBeforeMount } from "vue";
+import { getAllVehicles, getVehicle } from "../core/api";
+import { CarModel, CarDataResults } from "../types/CarModel";
+import { tableHeaders, formatDate, oneYearAhead } from "../utils";
+
 const state: State = reactive({
   carArray: [],
+  getCarData: [],
+  loadingData: false,
   page: 1,
   skip: 0,
   totalItems: 0,
@@ -193,21 +201,32 @@ const itemsPerPageText = computed<string>(() => {
 
 const loadVehiclesData = async () => {
   try {
+    state.loadingData = true;
     state.skip = (state.page - 1) * state.itemsPerPage;
-    state.carArray = await getAllVehicles(state.itemsPerPage, state.skip);
-    console.log('car', state.carArray.length);
-    
-    const getVehiclesCount = await getAllVehiclesCount()
-    state.totalItems = getVehiclesCount;
+    state.getCarData = await getAllVehicles(state.itemsPerPage, state.skip);
+    state.carArray = state.getCarData.vehicles;
+
+    state.totalItems = state.getCarData.count;
   } catch (err) {
     throw err;
+  } finally {
+    state.loadingData = false;
   }
 };
 
-const searchVehicleByNumber = () => {
-  console.log("search car number", state.searchInput);
+const getVehiclesBySearch = async () => {
+  state.skip = (state.page - 1) * state.itemsPerPage;
 
-  // getVehicle(/:vehicleNumber)
+  if (state.searchInput.length > 0) {
+    state.page = 1;
+  }
+  state.getCarData = await getVehicle(
+    state.searchInput,
+    state.itemsPerPage,
+    state.skip
+  );
+  state.carArray = state.getCarData.vehicles;
+  state.totalItems = state.getCarData.count;
 };
 
 const editCarDetails = (item: CarModel) => {
@@ -244,11 +263,19 @@ const deleteItemConfirm = () => {
 
 function onSelectItem(numItems: number) {
   state.itemsPerPage = numItems;
-  loadVehiclesData();
+  if (state.searchInput.length) {
+    getVehiclesBySearch();
+  } else {
+    loadVehiclesData();
+  }
 }
 
 function onPage(page: number) {
   state.page = page;
-  loadVehiclesData();
+  if (state.searchInput.length) {
+    getVehiclesBySearch();
+  } else {
+    loadVehiclesData();
+  }
 }
 </script>

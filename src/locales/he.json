@@ -5,7 +5,8 @@
     "confirm": "אישור",
     "save": "שמירה",
     "search": "חיפוש",
-    "searchBy": "חיפוש לפי מספר רכב"
+    "searchBy": "חיפוש לפי מספר רכב",
+    "noSearchResults": "אין תוצאות חיפוש"
   },
   "bless": {
     "goodMorning": "בוקר טוב",

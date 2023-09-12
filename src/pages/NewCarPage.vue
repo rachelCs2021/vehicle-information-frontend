@@ -17,7 +17,7 @@
           <!--min is arbitrary-->
         </v-col>
         <v-col>
-          <v-img :src="carPhoto" :max-width="500" class="mx-auto" />
+          <v-img :src="carImage" :max-width="500" class="mx-auto" />
         </v-col>
       </v-row>
       <v-btn :text="$t('newCarForm.addCar')" prepend-icon="mdi-plus" />
@@ -27,5 +27,5 @@
 
 <script setup lang="ts">
 import { formatDate, oneYearAhead } from "../utils";
-import { carPhoto } from "../assets";
+import { carImage } from "../assets";
 </script>

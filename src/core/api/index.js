@@ -13,17 +13,21 @@ export const client = axios.create({
 })
 
 export const getAllVehicles = async (top, skip) => {
-    console.log('params', top, skip);
     const data = await client.get('/vehicles', {
         params: {
             $top: top,
             $skip: skip
         }
     })
-    return data.data.vehicles;
+    return data.data;
 }
 
-export const getAllVehiclesCount = async () => {
-    const count = await client.get('/vehicles')
-    return count.data.vehicles.length;
+export const getVehicle = async (vehicleNumber, top, skip) => {
+    const vehicle = await client.get(`/vehicles/${vehicleNumber}`, {
+        params: {
+            $top: top,
+            $skip: skip
+        }
+    })
+    return vehicle.data;
 }
