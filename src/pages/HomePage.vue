@@ -30,7 +30,7 @@
 
     <div v-else>
       <v-img width="40vh" class="mx-auto" :src="noDataImage" />
-      <h3 class="text-center pt-6">{{ $t("main.noSearchResults")}}</h3>
+      <h3 class="text-center pt-6">{{ $t("main.noSearchResults") }}</h3>
     </div>
 
     <v-dialog
@@ -71,10 +71,7 @@
                 <v-text-field
                   type="date"
                   :label="$t('newCarForm.passedTestOnDate')"
-                  min="2020-01-31"
-                  :max="formatDate(oneYearAhead(new Date()))"
                   v-model="state.carModel.passedTestOnDate"
-                  required
                 />
               </v-col>
             </v-row>
@@ -163,7 +160,12 @@ import axios from "axios";
 import { noDataImage } from "../assets";
 import { DataTable } from "../components";
 import { reactive, computed, onBeforeMount } from "vue";
-import { getAllVehicles, getVehicle } from "../core/api";
+import {
+  getAllVehicles,
+  getVehicle,
+  updateVehicle,
+  deleteVehicle,
+} from "../core/api";
 import { CarModel, CarDataResults } from "../types/CarModel";
 import { tableHeaders, formatDate, oneYearAhead } from "../utils";
 
@@ -205,8 +207,9 @@ const loadVehiclesData = async () => {
     state.skip = (state.page - 1) * state.itemsPerPage;
     state.getCarData = await getAllVehicles(state.itemsPerPage, state.skip);
     state.carArray = state.getCarData.vehicles;
-
     state.totalItems = state.getCarData.count;
+
+    fixDateDisplay(state.carArray);
   } catch (err) {
     throw err;
   } finally {
@@ -227,18 +230,32 @@ const getVehiclesBySearch = async () => {
   );
   state.carArray = state.getCarData.vehicles;
   state.totalItems = state.getCarData.count;
+  fixDateDisplay(state.carArray);
+};
+
+const fixDateDisplay = (array: CarModel[]) => {
+  for (const vehicle of array) {
+    vehicle.passedTestOnDate = vehicle.passedTestOnDate
+      .split("-")
+      .reverse()
+      .join("/");
+  }
 };
 
 const editCarDetails = (item: CarModel) => {
   state.isEditCar = true;
+  item.passedTestOnDate = item.passedTestOnDate.split("/").reverse().join("-");
   state.carModel = item;
+  // state.carModel.passedTestOnDate = state.carModel.passedTestOnDate.split("/").reverse().join("-");
   state.editDialog = true;
 };
 
-const saveChanges = () => {
-  // update the carModel object
-  state.snackbar = true;
-  state.editDialog = false;
+const saveChanges = async () => {
+  const update = await updateVehicle(state.carModel);
+  if(update) {
+    state.snackbar = true;
+    state.editDialog = false;
+  }
 };
 
 const closeEditDialog = () => {
@@ -255,8 +272,11 @@ const closeDeleteDialog = () => {
   state.deleteDialog = false;
 };
 
-const deleteItemConfirm = () => {
+const deleteItemConfirm = async () => {
   // remove the car object
+  const deleteCar = await deleteVehicle(state.carModel);
+  console.log("delete", deleteCar);
+
   state.deleteDialog = false;
   state.snackbar = true;
 };
