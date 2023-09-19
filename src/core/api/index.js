@@ -1,14 +1,14 @@
 import axios from "axios"
 export const BASE_URL = "http://localhost:3000/"
 
-const contentType = "aplication/json"
+const contentType = "application/json"
 
 export const client = axios.create({
    baseURL: BASE_URL,
    timeout: 100 * 2000,
    headers: {
     "Content-Type": contentType,
-    "X-Requested-With": "X"
+    "X-Requested-With": "X",
    }
 })
 
@@ -30,4 +30,14 @@ export const getVehicle = async (vehicleNumber, top, skip) => {
         }
     })
     return vehicle.data;
+}
+
+export const updateVehicle = async (vehicle) => {
+    const update = await client.patch(`/vehicles/${vehicle._id}`, vehicle)
+    return update.data;
+}
+
+export const deleteVehicle = async (vehicle) => {
+    const deleteV = await client.delete(`/vehicles/${vehicle._id}`)
+    return deleteV.data;
 }
