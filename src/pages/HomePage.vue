@@ -252,7 +252,7 @@ const editCarDetails = (item: CarModel) => {
 
 const saveChanges = async () => {
   const update = await updateVehicle(state.carModel);
-  if(update) {
+  if (update) {
     state.snackbar = true;
     state.editDialog = false;
   }
@@ -299,3 +299,4 @@ function onPage(page: number) {
   }
 }
 </script>
+../layouts
