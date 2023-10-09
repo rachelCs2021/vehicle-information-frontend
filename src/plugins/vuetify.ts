@@ -34,7 +34,7 @@ export default createVuetify({
   },
   defaults: {
     VSelect: { variant: "outlined", density: "comfortable"},
-    VBtn: { class: "mr-4 mb-4", color: "red-lighten-1" },
+    VBtn: { class: "mb-4", color: "red-lighten-1" },
     secondButton: {
       class: "mr-4 mb-4",
       variant: "outlined",

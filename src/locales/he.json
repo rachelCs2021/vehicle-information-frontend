@@ -5,6 +5,7 @@
     "confirm": "אישור",
     "save": "שמירה",
     "search": "חיפוש",
+    "close": "סגירה",
     "searchBy": "חיפוש לפי מספר רכב",
     "noSearchResults": "אין תוצאות חיפוש"
   },
@@ -21,6 +22,8 @@
   "table": {
     "itemsPerPage": "שורות לעמוד",
     "editCarTitle": "עריכת פרטי רכב",
+    "reminderDialogTitle": " תזכורת!!",
+    "reminderDialogText": "רכבים שצריכים לעבור טסט בקרוב:",
     "deletionConfirmation": "האם אתה בטוח שברצונך למחוק שורה זו?",
     "updatedSuccessfully": "רכב מספר {carNumber} עודכן בהצלחה",
     "deletedSuccessfully": "רכב מספר {carNumber} נמחק בהצלחה"

@@ -12,6 +12,11 @@ export const client = axios.create({
   },
 });
 
+export const getVehiclesTestReminder = async () => {
+  const data = await client.get("/testReminder");
+  return data.data.needTest;
+};
+
 export const getAllVehicles = async (top, skip) => {
   const data = await client.get("/", {
     params: {
@@ -32,6 +37,11 @@ export const getVehicle = async (vehicleNumber, top, skip) => {
   return vehicle.data;
 };
 
+export const createVehicle = async (vehicle) => {
+    const newVehicle = await client.post(`/newVehicle`, vehicle);
+    return newVehicle.data;
+  };  
+
 export const updateVehicle = async (vehicle) => {
   const update = await client.patch(`/${vehicle._id}`, vehicle);
   return update.data;
@@ -40,9 +50,4 @@ export const updateVehicle = async (vehicle) => {
 export const deleteVehicle = async (vehicle) => {
   const deleteV = await client.delete(`/${vehicle._id}`);
   return deleteV.data;
-};
-
-export const createVehicle = async (vehicle) => {
-  const newVehicle = await client.post(`/`, vehicle);
-  return newVehicle.data;
 };

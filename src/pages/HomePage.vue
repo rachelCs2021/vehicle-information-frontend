@@ -9,6 +9,48 @@
         v-debounce:800ms="getVehiclesBySearch"
       />
     </div>
+
+    <!-- reminder vehicles test -->
+    <v-dialog width="auto" class="pa-5" v-model="state.reminderDialog">
+      <v-card>
+        <v-card-title class="text-h5 mt-3 mr-6 pb-0">{{
+          $t("table.reminderDialogTitle")
+        }}</v-card-title>
+        <v-card-text>{{ $t("table.reminderDialogText") }}</v-card-text>
+
+        <v-data-table
+          fixed-header
+          style="width: 93%"
+          :items="state.testReminderArray"
+          :headers="tableReminderHeaders"
+          class="overflow-y-auto elevation-15 mx-5 mt-2 mb-5"
+        >
+          <template v-slot:[`item.carNumber`]="{ item }">
+            <input
+              v-maska
+              style="max-width: 100px"
+              :value="item.raw.carNumber"
+              :data-maska="
+                item.raw.carNumber.length === 7 ? '##-###-##' : '###-##-###'
+              "
+            />
+          </template>
+          <template v-slot:bottom>
+            <div></div>
+          </template>
+        </v-data-table>
+
+        <v-card-actions>
+          <v-btn
+            block
+            color="black"
+            :text="$t('main.close')"
+            @click="state.reminderDialog = false"
+          />
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
     <div v-if="state.loadingData" class="d-flex justify-center">
       <v-progress-circular :size="50" indeterminate />
     </div>
@@ -22,10 +64,10 @@
       :itemsPerPageText="itemsPerPageText"
       :pageLength="Math.ceil(state.totalItems / state.itemsPerPage)"
       class="overflow-y-auto elevation-15 mt-2 mb-5"
-      @on-change-page="onPage($event)"
-      @on-select-item="onSelectItem($event)"
       @on-car-editing="editCarDetails"
       @on-car-deletion="carDeletion"
+      @on-change-page="onPage($event)"
+      @on-select-item="onSelectItem($event)"
     />
 
     <div v-else>
@@ -33,6 +75,7 @@
       <h3 class="text-center pt-6">{{ $t("main.noSearchResults") }}</h3>
     </div>
 
+    <!-- edit vehicle dialog -->
     <v-dialog
       persistent
       v-model="state.editDialog"
@@ -84,11 +127,17 @@
           }}</second-button>
           <v-spacer />
 
-          <v-btn class="ml-5" @click="saveChanges">{{ $t("main.save") }}</v-btn>
+          <v-btn
+            class="ml-5 bg-red-lighten-1"
+            color="white"
+            @click="saveChanges"
+            >{{ $t("main.save") }}</v-btn
+          >
         </v-card-actions>
       </v-card>
     </v-dialog>
 
+    <!-- delete vehicle dialog -->
     <v-dialog persistent v-model="state.deleteDialog" max-width="500px">
       <v-card>
         <v-card-title class="text-h5 text-center my-6">{{
@@ -99,9 +148,11 @@
           <second-button @click="closeDeleteDialog">{{
             $t("main.cancel")
           }}</second-button>
-          <v-btn class="ml-5" @click="deleteItemConfirm">{{
-            $t("main.confirm")
-          }}</v-btn>
+          <v-btn
+            class="ml-5 mr-5"
+            :text="$t('main.confirm')"
+            @click="deleteItemConfirm"
+          />
         </div>
       </v-card>
     </v-dialog>
@@ -140,12 +191,14 @@
 interface State {
   carArray: CarModel[];
   getCarData: CarDataResults;
+  testReminderArray: object[];
   loadingData: boolean;
   page: number;
   skip: number;
   totalItems: number;
   itemsPerPage: number;
   searchInput: string;
+  reminderDialog: boolean;
   deleteDialog: boolean;
   editDialog: boolean;
   isEditCar: boolean;
@@ -157,27 +210,39 @@ interface State {
 
 <script setup lang="ts">
 import axios from "axios";
+import { vMaska } from "maska";
+import { useI18n } from "vue-i18n";
 import { noDataImage } from "../assets";
 import { DataTable } from "../components";
 import { reactive, computed, onBeforeMount } from "vue";
 import {
+  getVehiclesTestReminder,
   getAllVehicles,
   getVehicle,
   updateVehicle,
   deleteVehicle,
 } from "../core/api";
-import { CarModel, CarDataResults } from "../types/CarModel";
-import { tableHeaders, formatDate, oneYearAhead } from "../utils";
+import { CarModel, CarDataResults } from "../types";
+import {
+  tableHeaders,
+  tableReminderHeaders,
+  formatDate,
+  oneYearAhead,
+} from "../utils";
+
+const { t } = useI18n();
 
 const state: State = reactive({
   carArray: [],
   getCarData: [],
+  testReminderArray: [],
   loadingData: false,
   page: 1,
   skip: 0,
   totalItems: 0,
   itemsPerPage: 10,
   searchInput: "",
+  reminderDialog: false,
   deleteDialog: false,
   editDialog: false,
   isEditCar: false,
@@ -193,6 +258,7 @@ const state: State = reactive({
 
 onBeforeMount(() => {
   loadVehiclesData();
+  vehiclesReminder();
 });
 
 const itemsPerPageText = computed<string>(() => {
@@ -200,6 +266,15 @@ const itemsPerPageText = computed<string>(() => {
     state.carArray.length + state.skip
   ).toLocaleString()} מתוך ${state.totalItems.toLocaleString()}`;
 });
+
+const vehiclesReminder = async () => {
+    state.testReminderArray = await getVehiclesTestReminder();
+   if(state.testReminderArray.length) {
+    state.reminderDialog = true;
+   } 
+   
+    fixDateDisplay(state.testReminderArray);
+};
 
 const loadVehiclesData = async () => {
   try {
@@ -235,10 +310,12 @@ const getVehiclesBySearch = async () => {
 
 const fixDateDisplay = (array: CarModel[]) => {
   for (const vehicle of array) {
-    vehicle.passedTestOnDate = vehicle.passedTestOnDate
-      .split("-")
-      .reverse()
-      .join("/");
+    const inputDate = new Date(vehicle.passedTestOnDate);
+    const day = String(inputDate.getDate()).padStart(2, "0");
+    const month = String(inputDate.getMonth() + 1).padStart(2, "0");
+    const year = inputDate.getFullYear();
+
+    vehicle.passedTestOnDate = `${day}/${month}/${year}`;
   }
 };
 
@@ -253,6 +330,10 @@ const editCarDetails = (item: CarModel) => {
 const saveChanges = async () => {
   const update = await updateVehicle(state.carModel);
   if (update) {
+    state.carModel.passedTestOnDate = state.carModel.passedTestOnDate
+      .split("-")
+      .reverse()
+      .join("/");
     state.snackbar = true;
     state.editDialog = false;
   }
@@ -260,6 +341,10 @@ const saveChanges = async () => {
 
 const closeEditDialog = () => {
   state.editDialog = false;
+  state.carModel.passedTestOnDate = state.carModel.passedTestOnDate
+    .split("-")
+    .reverse()
+    .join("/");
 };
 
 const carDeletion = (item: CarModel) => {
@@ -273,12 +358,11 @@ const closeDeleteDialog = () => {
 };
 
 const deleteItemConfirm = async () => {
-  // remove the car object
   const deleteCar = await deleteVehicle(state.carModel);
-  console.log("delete", deleteCar);
-
-  state.deleteDialog = false;
-  state.snackbar = true;
+  if (deleteCar.messsage) {
+    state.deleteDialog = false;
+    state.snackbar = true;
+  }
 };
 
 function onSelectItem(numItems: number) {

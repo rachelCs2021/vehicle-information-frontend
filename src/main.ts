@@ -7,6 +7,7 @@ import { registerPlugins } from "@/plugins";
 const app = createApp(App);
 
 app.use(i18n);
+app.directive('debounce', vue3Debounce({ lock: true }))
 
 registerPlugins(app);
 

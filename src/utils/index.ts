@@ -38,7 +38,20 @@ export const tableHeaders: TableHeaders[] = [
     title: i18n.global.t(`tableHeaders.actions`),
     key: "actions",
     sortable: false,
+  }
+];
+
+export const tableReminderHeaders: TableHeaders[] = [
+  {
+    title: i18n.global.t(`tableHeaders.carNumber`),
+    key: "carNumber",
   },
+  { title: i18n.global.t(`tableHeaders.manufacturer`), key: "manufacturer" },
+  { title: i18n.global.t(`tableHeaders.model`), key: "model" },
+  {
+    title: i18n.global.t(`tableHeaders.passedTestOnDate`),
+    key: "passedTestOnDate",
+  }
 ];
 
 export const oneYearAhead = (date: Date): Date => {

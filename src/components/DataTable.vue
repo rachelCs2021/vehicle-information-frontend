@@ -22,6 +22,17 @@
       </div>
     </template>
 
+    <template v-slot:[`item.carNumber`]="{ item }">
+      <input
+        v-maska
+        style="max-width: 100px"
+        :value="item.raw.carNumber"
+        :data-maska="
+          item.raw.carNumber.length === 7 ? '##-###-##' : '###-##-###'
+        "
+      />
+    </template>
+
     <template v-slot:[`item.actions`]="{ item }">
       <v-icon
         size="small"
@@ -39,6 +50,7 @@
 </template>
 
 <script lang="ts" setup>
+import { vMaska } from "maska";
 import { Pagination } from "../components";
 
 interface Props {
