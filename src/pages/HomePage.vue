@@ -2,34 +2,80 @@
   <v-container>
     <div class="d-flex mt-3">
       <searchInput
-        style="max-width: 15%"
+        style="max-width: 20%"
         v-model="state.searchInput"
+        prepend-inner-icon="mdi-magnify"
         :label="$t('main.searchBy')"
-        @keyup.enter="searchVehicleByNumber"
-      />
-      <v-btn
-        height="43"
-        color="grey-lighten-1"
-        class="mr-3 py-3"
-        :text="$t('main.search')"
-        prepend-icon="mdi-magnify"
-        @click="searchVehicleByNumber"
+        v-debounce:800ms="getVehiclesBySearch"
       />
     </div>
+
+    <!-- reminder vehicles test -->
+    <v-dialog width="auto" class="pa-5" v-model="state.reminderDialog">
+      <v-card>
+        <v-card-title class="text-h5 mt-3 mr-6 pb-0">{{
+          $t("table.reminderDialogTitle")
+        }}</v-card-title>
+        <v-card-text>{{ $t("table.reminderDialogText") }}</v-card-text>
+
+        <v-data-table
+          fixed-header
+          style="width: 93%"
+          :items="state.testReminderArray"
+          :headers="tableReminderHeaders"
+          class="overflow-y-auto elevation-15 mx-5 mt-2 mb-5"
+        >
+          <template v-slot:[`item.carNumber`]="{ item }">
+            <input
+              v-maska
+              style="max-width: 100px"
+              :value="item.raw.carNumber"
+              :data-maska="
+                item.raw.carNumber.length === 7 ? '##-###-##' : '###-##-###'
+              "
+            />
+          </template>
+          <template v-slot:bottom>
+            <div></div>
+          </template>
+        </v-data-table>
+
+        <v-card-actions>
+          <v-btn
+            block
+            color="black"
+            :text="$t('main.close')"
+            @click="state.reminderDialog = false"
+          />
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
+    <div v-if="state.loadingData" class="d-flex justify-center">
+      <v-progress-circular :size="50" indeterminate />
+    </div>
+
     <DataTable
-      :items="carArray"
+      v-else-if="state.carArray?.length > 0 && !state.loadingData"
+      :items="state.carArray"
       :page="state.page"
       :headers="tableHeaders"
       :itemsPerPage="state.itemsPerPage"
       :itemsPerPageText="itemsPerPageText"
       :pageLength="Math.ceil(state.totalItems / state.itemsPerPage)"
       class="overflow-y-auto elevation-15 mt-2 mb-5"
-      @on-change-page="onPage($event)"
-      @on-select-item="onSelectItem($event)"
       @on-car-editing="editCarDetails"
       @on-car-deletion="carDeletion"
+      @on-change-page="onPage($event)"
+      @on-select-item="onSelectItem($event)"
     />
 
+    <div v-else>
+      <v-img width="40vh" class="mx-auto" :src="noDataImage" />
+      <h3 class="text-center pt-6">{{ $t("main.noSearchResults") }}</h3>
+    </div>
+
+    <!-- edit vehicle dialog -->
     <v-dialog
       persistent
       v-model="state.editDialog"
@@ -68,10 +114,7 @@
                 <v-text-field
                   type="date"
                   :label="$t('newCarForm.passedTestOnDate')"
-                  min="2020-01-31"
-                  :max="formatDate(oneYearAhead(new Date()))"
                   v-model="state.carModel.passedTestOnDate"
-                  required
                 />
               </v-col>
             </v-row>
@@ -84,11 +127,17 @@
           }}</second-button>
           <v-spacer />
 
-          <v-btn class="ml-5" @click="saveChanges">{{ $t("main.save") }}</v-btn>
+          <v-btn
+            class="ml-5 bg-red-lighten-1"
+            color="white"
+            @click="saveChanges"
+            >{{ $t("main.save") }}</v-btn
+          >
         </v-card-actions>
       </v-card>
     </v-dialog>
 
+    <!-- delete vehicle dialog -->
     <v-dialog persistent v-model="state.deleteDialog" max-width="500px">
       <v-card>
         <v-card-title class="text-h5 text-center my-6">{{
@@ -99,9 +148,11 @@
           <second-button @click="closeDeleteDialog">{{
             $t("main.cancel")
           }}</second-button>
-          <v-btn class="ml-5" @click="deleteItemConfirm">{{
-            $t("main.confirm")
-          }}</v-btn>
+          <v-btn
+            class="ml-5 mr-5"
+            :text="$t('main.confirm')"
+            @click="deleteItemConfirm"
+          />
         </div>
       </v-card>
     </v-dialog>
@@ -138,11 +189,16 @@
 
 <script lang="ts">
 interface State {
+  carArray: CarModel[];
+  getCarData: CarDataResults;
+  testReminderArray: object[];
+  loadingData: boolean;
   page: number;
   skip: number;
   totalItems: number;
   itemsPerPage: number;
   searchInput: string;
+  reminderDialog: boolean;
   deleteDialog: boolean;
   editDialog: boolean;
   isEditCar: boolean;
@@ -153,17 +209,40 @@ interface State {
 </script>
 
 <script setup lang="ts">
-import { reactive, computed, onBeforeMount } from "vue";
+import axios from "axios";
+import { vMaska } from "maska";
+import { useI18n } from "vue-i18n";
+import { noDataImage } from "../assets";
 import { DataTable } from "../components";
-import { tableHeaders } from "../utils";
-import { formatDate, oneYearAhead } from "../utils";
-import CarModel from "../types/CarModel";
+import { reactive, computed, onBeforeMount } from "vue";
+import {
+  getVehiclesTestReminder,
+  getAllVehicles,
+  getVehicle,
+  updateVehicle,
+  deleteVehicle,
+} from "../core/api";
+import { CarModel, CarDataResults } from "../types";
+import {
+  tableHeaders,
+  tableReminderHeaders,
+  formatDate,
+  oneYearAhead,
+} from "../utils";
+
+const { t } = useI18n();
+
 const state: State = reactive({
+  carArray: [],
+  getCarData: [],
+  testReminderArray: [],
+  loadingData: false,
   page: 1,
   skip: 0,
   totalItems: 0,
   itemsPerPage: 10,
   searchInput: "",
+  reminderDialog: false,
   deleteDialog: false,
   editDialog: false,
   isEditCar: false,
@@ -177,103 +256,94 @@ const state: State = reactive({
   timeout: 2000,
 });
 
-const carArray: CarModel[] = [
-  {
-    carNumber: "1234567",
-    manufacturer: "טויוטה",
-    model: "קאמרי",
-    passedTestOnDate: "2023-08-29",
-  },
-  {
-    carNumber: "1478523",
-    manufacturer: "פורד",
-    model: "מוסטנג",
-    passedTestOnDate: "2023-08-30",
-  },
-  {
-    carNumber: "7896541",
-    manufacturer: "הונדה",
-    model: "סיביק",
-    passedTestOnDate: "2023-08-31",
-  },
-  {
-    carNumber: "3214569",
-    manufacturer: "מרצדס",
-    model: "C-Class",
-    passedTestOnDate: "2023-09-01",
-  },
-  {
-    carNumber: "9632587",
-    manufacturer: "ב.מ.וו",
-    model: "X5",
-    passedTestOnDate: "2023-09-02",
-  },
-  {
-    carNumber: "5647852",
-    manufacturer: "אאודי",
-    model: "A4",
-    passedTestOnDate: "2023-09-03",
-  },
-  {
-    carNumber: "125488",
-    manufacturer: "פיאט",
-    model: "500",
-    passedTestOnDate: "2023-09-04",
-  },
-  {
-    carNumber: "88888888",
-    manufacturer: "ניסאן",
-    model: "קשקאי",
-    passedTestOnDate: "2023-09-05",
-  },
-  {
-    carNumber: "5555555",
-    manufacturer: "סובארו",
-    model: "אימפרזה",
-    passedTestOnDate: "2023-09-06",
-  },
-  {
-    carNumber: "562333333",
-    manufacturer: "מיצובישי",
-    model: "Outlander",
-    passedTestOnDate: "2023-09-07",
-  },
-];
-
 onBeforeMount(() => {
-  loadCarsData();
+  loadVehiclesData();
+  vehiclesReminder();
 });
-
-const loadCarsData = () => {
-  state.totalItems = carArray.length;
-};
 
 const itemsPerPageText = computed<string>(() => {
   return `${(state.skip + 1).toLocaleString()}-${(
-    carArray.length + state.skip
+    state.carArray.length + state.skip
   ).toLocaleString()} מתוך ${state.totalItems.toLocaleString()}`;
 });
 
-const searchVehicleByNumber = () => {
-  console.log("search car number", state.searchInput);
+const vehiclesReminder = async () => {
+    state.testReminderArray = await getVehiclesTestReminder();
+   if(state.testReminderArray.length) {
+    state.reminderDialog = true;
+   } 
+   
+    fixDateDisplay(state.testReminderArray);
+};
 
-  // getVehicle(/:vehicleNumber)
+const loadVehiclesData = async () => {
+  try {
+    state.loadingData = true;
+    state.skip = (state.page - 1) * state.itemsPerPage;
+    state.getCarData = await getAllVehicles(state.itemsPerPage, state.skip);
+    state.carArray = state.getCarData.vehicles;
+    state.totalItems = state.getCarData.count;
+
+    fixDateDisplay(state.carArray);
+  } catch (err) {
+    throw err;
+  } finally {
+    state.loadingData = false;
+  }
+};
+
+const getVehiclesBySearch = async () => {
+  state.skip = (state.page - 1) * state.itemsPerPage;
+
+  if (state.searchInput.length > 0) {
+    state.page = 1;
+  }
+  state.getCarData = await getVehicle(
+    state.searchInput,
+    state.itemsPerPage,
+    state.skip
+  );
+  state.carArray = state.getCarData.vehicles;
+  state.totalItems = state.getCarData.count;
+  fixDateDisplay(state.carArray);
+};
+
+const fixDateDisplay = (array: CarModel[]) => {
+  for (const vehicle of array) {
+    const inputDate = new Date(vehicle.passedTestOnDate);
+    const day = String(inputDate.getDate()).padStart(2, "0");
+    const month = String(inputDate.getMonth() + 1).padStart(2, "0");
+    const year = inputDate.getFullYear();
+
+    vehicle.passedTestOnDate = `${day}/${month}/${year}`;
+  }
 };
 
 const editCarDetails = (item: CarModel) => {
   state.isEditCar = true;
+  item.passedTestOnDate = item.passedTestOnDate.split("/").reverse().join("-");
   state.carModel = item;
   state.editDialog = true;
 };
 
-const saveChanges = () => {
-  // update the carModel object
-  state.snackbar = true;
-  state.editDialog = false;
+const saveChanges = async () => {
+  const update = await updateVehicle(state.carModel);
+  if (update) {
+    state.carModel.passedTestOnDate = state.carModel.passedTestOnDate
+      .split("-")
+      .reverse()
+      .join("/");
+    state.snackbar = true;
+    state.editDialog = false;
+  }
 };
 
 const closeEditDialog = () => {
   state.editDialog = false;
+  state.carModel.passedTestOnDate = state.carModel.passedTestOnDate
+    .split("-")
+    .reverse()
+    .join("/");
 };
 
 const carDeletion = (item: CarModel) => {
@@ -286,19 +356,29 @@ const closeDeleteDialog = () => {
   state.deleteDialog = false;
 };
 
-const deleteItemConfirm = () => {
-  // remove the car object
-  state.deleteDialog = false;
-  state.snackbar = true;
+const deleteItemConfirm = async () => {
+  const deleteCar = await deleteVehicle(state.carModel);
+  if (deleteCar.messsage) {
+    state.deleteDialog = false;
+    state.snackbar = true;
+  }
 };
 
 function onSelectItem(numItems: number) {
   state.itemsPerPage = numItems;
-  loadCarsData();
+  if (state.searchInput.length) {
+    getVehiclesBySearch();
+  } else {
+    loadVehiclesData();
+  }
 }
 
 function onPage(page: number) {
   state.page = page;
-  loadCarsData();
+  if (state.searchInput.length) {
+    getVehiclesBySearch();
+  } else {
+    loadVehiclesData();
+  }
 }
 </script>

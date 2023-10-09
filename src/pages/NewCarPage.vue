@@ -20,7 +20,7 @@
           <v-img :src="carPhoto" :max-width="500" class="mx-auto" />
         </v-col>
       </v-row>
-      <v-btn :text="$t('newCarForm.addCar')" prepend-icon="mdi-plus" />
+      <v-btn class="mr-5" :text="$t('newCarForm.addCar')" prepend-icon="mdi-plus" />
     </v-card>
   </v-container>
 </template>
