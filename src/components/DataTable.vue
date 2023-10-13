@@ -24,12 +24,9 @@
 
     <template v-slot:[`item.carNumber`]="{ item }">
       <input
-        v-maska
         style="max-width: 100px"
         :value="item.raw.carNumber"
-        :data-maska="
-          item.raw.carNumber.length === 7 ? '##-###-##' : '###-##-###'
-        "
+        v-maska:[carNumberMask]
       />
     </template>
 
@@ -51,6 +48,7 @@
 
 <script lang="ts" setup>
 import { vMaska } from "maska";
+import { reactive } from "vue";
 import { Pagination } from "../components";
 
 interface Props {
@@ -63,6 +61,10 @@ interface Props {
 }
 
 defineProps<Props>();
+
+const carNumberMask = reactive({
+  mask: ["##-###-##", "###-##-###"],
+});
 </script>
 
 <style>

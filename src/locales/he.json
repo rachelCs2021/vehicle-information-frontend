@@ -6,6 +6,7 @@
     "save": "שמירה",
     "search": "חיפוש",
     "close": "סגירה",
+    "login": "כניסה",
     "searchBy": "חיפוש לפי מספר רכב",
     "noSearchResults": "אין תוצאות חיפוש"
   },
@@ -14,6 +15,10 @@
     "goodEvning": "ערב טוב",
     "goodNight": "לילה טוב",
     "goodAfternoon": "צהריים טובים"
+  },
+  "login": {
+   "userName": "שם משתמש",
+   "password": "סיסמה"
   },
   "navigation": {
     "homePage": "דף הבית",
@@ -33,14 +38,15 @@
     "carNumber": "מספר רכב",
     "manufacturer": "יצרן",
     "model": "דגם",
-    "passedTestOnDate": "עבר טסט בתאריך",
-    "addCar": "הוספה"
+    "passedTestOnDate": "תאריך חידוש הטסט הבא",
+    "addCar": "הוספה",
+    "addVehicleDialog": "הרכב התווסף בהצלחה !!"
   },
   "tableHeaders": {
     "carNumber": "מספר רכב",
     "manufacturer": "יצרן",
     "model": "דגם",
-    "passedTestOnDate": "עבר טסט בתאריך",
+    "passedTestOnDate": "תאריך חידוש טסט",
     "actions": "עריכה/מחיקה"
   },
   "rules": {

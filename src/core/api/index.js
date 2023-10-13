@@ -38,7 +38,7 @@ export const getVehicle = async (vehicleNumber, top, skip) => {
 };
 
 export const createVehicle = async (vehicle) => {
-    const newVehicle = await client.post(`/newVehicle`, vehicle);
+    const newVehicle = await client.post(`/`, vehicle);
     return newVehicle.data;
   };  
 

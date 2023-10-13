@@ -11,6 +11,4 @@ app.directive('debounce', vue3Debounce({ lock: true }))
 
 registerPlugins(app);
 
-app.directive("debounce", vue3Debounce({ lock: true }));
-
 app.mount("#app");

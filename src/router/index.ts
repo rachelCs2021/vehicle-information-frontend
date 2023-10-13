@@ -2,6 +2,14 @@ import { createRouter, createWebHistory } from "vue-router";
 
 const routes = [
   {
+    path: "/login",
+    name: "Login",
+    meta: {
+      requiresAuth: true,
+    },
+    component: () => import("@/pages/LoginPage.vue"),
+  },
+  {
     path: "/",
     component: () => import("@/layouts/DefaultLayout.vue"),
     redirect: "/home",
@@ -17,6 +25,10 @@ const routes = [
         component: () => import("@/pages/NewCarPage.vue"),
       },
     ],
+  },
+  {
+    path: "/:pathMatch(.*)*",
+    component: () => import("@/pages/LoginPage.vue"),
   },
 ];
 
