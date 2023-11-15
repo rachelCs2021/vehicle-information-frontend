@@ -10,14 +10,14 @@
               <v-form ref="formRef" style="width: 300px">
                 <v-text-field
                   required
-                  v-model="state.userName"
+                  v-model="state.userDetails.userName"
                   :rules="state.userNameRules"
                   :label="$t('login.userName')"
                 />
                 <v-text-field
                   required
                   type="password"
-                  v-model="state.password"
+                  v-model="state.userDetails.password"
                   :rules="state.passwordRules"
                   :label="$t('login.password')"
                 />
@@ -45,6 +45,7 @@
 import router from "../router";
 import { useI18n } from "vue-i18n";
 import { reactive, ref } from "vue";
+import { userLogin } from "../core/api";
 import { logo, loginImage } from "../assets";
 
 const { t } = useI18n();
@@ -52,18 +53,22 @@ const { t } = useI18n();
 const formRef = ref();
 
 const state = reactive({
-  userName: "",
-  password: "",
+  userDetails: {
+    userName: "",
+    password: "",
+  },
   userNameRules: [(v: string) => !!v || t("rules.required")],
   passwordRules: [(v: string) => !!v || t("rules.required")],
 });
 
 const login = async () => {
   const { valid } = await formRef.value.validate();
-  console.log("valid", valid);
-  console.log("user", state.userName, state.password);
+
   if (valid) {
-    router.push("/");
+    const login = await userLogin(state.userDetails);
+    if (login) {
+      router.push("/");
+    }
   }
 };
 </script>

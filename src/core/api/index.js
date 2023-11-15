@@ -12,6 +12,11 @@ export const client = axios.create({
   },
 });
 
+export const userLogin = async (user) => {
+  const data = await axios.post("http://localhost:3000/users/login", user);
+  return data.data;
+};
+
 export const getVehiclesTestReminder = async () => {
   const data = await client.get("/testReminder");
   return data.data.needTest;
@@ -38,9 +43,9 @@ export const getVehicle = async (vehicleNumber, top, skip) => {
 };
 
 export const createVehicle = async (vehicle) => {
-    const newVehicle = await client.post(`/`, vehicle);
-    return newVehicle.data;
-  };  
+  const newVehicle = await client.post(`/`, vehicle);
+  return newVehicle.data;
+};
 
 export const updateVehicle = async (vehicle) => {
   const update = await client.patch(`/${vehicle._id}`, vehicle);

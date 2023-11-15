@@ -51,8 +51,11 @@
       </v-card>
     </v-dialog>
 
-    <div v-if="state.loadingData" class="d-flex justify-center">
-      <v-progress-circular :size="50" indeterminate />
+    <div v-if="state.loadingData">
+      <div class="d-flex justify-center">
+        <v-progress-circular :size="50" indeterminate />
+      </div>
+      <div v-text="$t('main.loading')" class="mt-5 text-center text-xl-h4" />
     </div>
 
     <DataTable
@@ -222,7 +225,7 @@ import {
   updateVehicle,
   deleteVehicle,
 } from "../core/api";
-import { CarModel, CarDataResults } from "../types";
+import { CarModel, CarDataResults } from "../types/CarModel";
 import {
   tableHeaders,
   tableReminderHeaders,
@@ -268,12 +271,13 @@ const itemsPerPageText = computed<string>(() => {
 });
 
 const vehiclesReminder = async () => {
-    state.testReminderArray = await getVehiclesTestReminder();
-   if(state.testReminderArray.length) {
+  state.testReminderArray = await getVehiclesTestReminder();
+  if (state.testReminderArray.length) {
     state.reminderDialog = true;
-   } 
-   
-    fixDateDisplay(state.testReminderArray);
+  }
+// console.log('reminder', JSON.parse(JSON.stringify(state.testReminderArray)));
+
+  fixDateDisplay(state.testReminderArray);
 };
 
 const loadVehiclesData = async () => {

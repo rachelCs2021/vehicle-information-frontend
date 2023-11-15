@@ -8,7 +8,8 @@
     "close": "סגירה",
     "login": "כניסה",
     "searchBy": "חיפוש לפי מספר רכב",
-    "noSearchResults": "אין תוצאות חיפוש"
+    "noSearchResults": "אין תוצאות חיפוש",
+    "loading": "טוען נתונים..."
   },
   "bless": {
     "goodMorning": "בוקר טוב",
