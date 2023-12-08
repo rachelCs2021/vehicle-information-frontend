@@ -2,7 +2,7 @@ import { defineRule } from "vee-validate";
 
 import i18n from "../plugins/i18n";
 
-defineRule("required", (value) => {
+defineRule("required", (value: string) => {
   if (!value || !value.length) {
     return i18n.global.t("rules.required");
   }
@@ -10,7 +10,7 @@ defineRule("required", (value) => {
   return true;
 });
 
-defineRule("string", (value) => {
+defineRule("string", (value: string) => {
   if (!/[^0-9]/.test(value)) {
     return "This field must be character";
   }
@@ -18,7 +18,7 @@ defineRule("string", (value) => {
   return true;
 });
 
-defineRule("number", (value) => {
+defineRule("number", (value: string) => {
   if (/[^0-9]/.test(value)) {
     return i18n.global.t("rules.numbers");
   }
@@ -26,15 +26,15 @@ defineRule("number", (value) => {
   return true;
 });
 
-defineRule("negativeOrPositiveNum", (value) => {
-  if (!/^[-+]?\d+$|^[-+]?\d+(?:\.\d+)?$/.test(value)) {
-    return i18n.global.t("rules.numbers");
-  }
+// defineRule("negativeOrPositiveNum", (value) => {
+//   if (!/^[-+]?\d+$|^[-+]?\d+(?:\.\d+)?$/.test(value)) {
+//     return i18n.global.t("rules.numbers");
+//   }
 
-  return true;
-});
+//   return true;
+// });
 
-defineRule("email", (value) => {
+defineRule("email", (value: string) => {
   // Field is empty, should pass
 
   if (!value || !value.length) {
@@ -48,7 +48,8 @@ defineRule("email", (value) => {
   return true;
 });
 
-defineRule("minLength", (value, [min]) => {
+defineRule("minLength", (value: string, [min]: [number]) => {
+  
   if (!value || !value.length) {
     return true;
   }
@@ -60,7 +61,7 @@ defineRule("minLength", (value, [min]) => {
   return true;
 });
 
-defineRule("maxLength", (value, [max]) => {
+defineRule("maxLength", (value: string, [max]: [number]) => {
   if (!value || !value.length) {
     return true;
   }
@@ -72,7 +73,7 @@ defineRule("maxLength", (value, [max]) => {
   return true;
 });
 
-defineRule("minMax", (value, [min, max]) => {
+defineRule("minMax", (value: string, [min, max]: [number, number]) => {
   // The field is empty so it should pass
 
   if (!value || !value.length) {
@@ -92,7 +93,7 @@ defineRule("minMax", (value, [min, max]) => {
   return true;
 });
 
-defineRule("hebrew", (value) => {
+defineRule("hebrew", (value: string) => {
   if (!/^[\u0590-\u05FF ,.'-]+$/i.test(value) && value) {
     return i18n.global.t("rules.hebrew");
   }
@@ -102,7 +103,7 @@ defineRule("hebrew", (value) => {
 
 // date-dd/mm/yy format
 
-defineRule("date", (value) => {
+defineRule("date", (value: string) => {
   if (/^(0?[1-9]|[12][0-9]|3[01])\/(0?[1-9]|1[012])\/\d{2}$/.test(value)) {
     return i18n.global.t("rules.date");
   }

@@ -98,8 +98,8 @@
 
 <script setup lang="ts">
 import "../utils/rules";
-import { vMaska } from "maska";
 import router from "../router";
+import { vMaska } from "maska";
 import { reactive, ref } from "vue";
 import { carImage } from "../assets";
 import { CarModel } from "@/types/CarModel";

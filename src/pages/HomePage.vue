@@ -237,7 +237,7 @@ const { t } = useI18n();
 
 const state: State = reactive({
   carArray: [],
-  getCarData: [],
+  getCarData: { count: 0, vehicles: [] },
   testReminderArray: [],
   loadingData: false,
   page: 1,
@@ -271,13 +271,13 @@ const itemsPerPageText = computed<string>(() => {
 });
 
 const vehiclesReminder = async () => {
-  state.testReminderArray = await getVehiclesTestReminder();
-  if (state.testReminderArray.length) {
+  const data = await getVehiclesTestReminder();
+
+  if (data.length) {
+    fixDateDisplay(data);
+    state.testReminderArray = data;
     state.reminderDialog = true;
   }
-// console.log('reminder', JSON.parse(JSON.stringify(state.testReminderArray)));
-
-  fixDateDisplay(state.testReminderArray);
 };
 
 const loadVehiclesData = async () => {

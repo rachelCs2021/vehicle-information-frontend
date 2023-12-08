@@ -13,8 +13,12 @@ export const client = axios.create({
 });
 
 export const userLogin = async (user) => {
-  const data = await axios.post("http://localhost:3000/users/login", user);
-  return data.data;
+  try {
+    const data = await axios.post("http://localhost:3000/users/login", user);
+    return data.data;
+  } catch (error) {
+    console.log("error", error);
+  }
 };
 
 export const getVehiclesTestReminder = async () => {

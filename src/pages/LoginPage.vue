@@ -26,8 +26,10 @@
                   color="red-lighten-1"
                   class="text--white mr-5 mt-3"
                   :text="$t('main.login')"
+                  :loading="state.loadingLogin"
                   @click="login"
                 />
+                <p v-if="state.errorMessage" class="text-red text-caption mr-5 mt-n2">* שם משתמש או סיסמה אינם תקינים</p>
               </v-form>
             </div>
           </div>
@@ -59,16 +61,22 @@ const state = reactive({
   },
   userNameRules: [(v: string) => !!v || t("rules.required")],
   passwordRules: [(v: string) => !!v || t("rules.required")],
+  loadingLogin: false,
+  errorMessage: false
 });
 
 const login = async () => {
   const { valid } = await formRef.value.validate();
 
   if (valid) {
+    state.loadingLogin = true;
     const login = await userLogin(state.userDetails);
+    
     if (login) {
       router.push("/");
-    }
+    } 
+    state.loadingLogin = false;
+    state.errorMessage = true;
   }
 };
 </script>
